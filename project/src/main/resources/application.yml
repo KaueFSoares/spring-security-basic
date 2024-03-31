@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: project
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+
+
+server:
+  error:
+    include-stacktrace: never
+    include-message: always
+
+security:
+  auth:
+    jwt:
+      secret: ${JWT_SECRET}
+      issuer: ${JWT_ISSUER}
+
+    seed:
+      adminUsername: ${ADMIN_USERNAME}
+      adminPassword: ${ADMIN_PASSWORD}
+
+      userUsername: ${USER_USERNAME}
+      userPassword: ${USER_PASSWORD}
+
+
+  cors:
+    frontend: ${CORS_FRONTEND}

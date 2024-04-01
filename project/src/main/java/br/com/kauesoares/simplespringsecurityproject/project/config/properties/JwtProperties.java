@@ -11,7 +11,6 @@ import org.springframework.context.annotation.PropertySource;
 @Data
 public class JwtProperties {
 
-    private String secret;
     private String issuer;
 
 }

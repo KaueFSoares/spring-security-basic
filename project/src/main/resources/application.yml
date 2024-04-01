@@ -23,6 +23,10 @@ server:
     include-message: always
 
 security:
+  rsa:
+    publicKey: ${RSA_PUBLIC_KEY}
+    privateKey: ${RSA_PRIVATE_KEY}
+
   auth:
     jwt:
       secret: ${JWT_SECRET}
@@ -34,7 +38,6 @@ security:
 
       userUsername: ${USER_USERNAME}
       userPassword: ${USER_PASSWORD}
-
 
   cors:
     frontend: ${CORS_FRONTEND}

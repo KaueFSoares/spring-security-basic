@@ -4,6 +4,7 @@ import br.com.kauesoares.simplespringsecurityproject.project.dto.Response;
 import br.com.kauesoares.simplespringsecurityproject.project.dto.req.LoginRequestDTO;
 import br.com.kauesoares.simplespringsecurityproject.project.dto.res.LoginResponseDTO;
 import br.com.kauesoares.simplespringsecurityproject.project.service.AuthService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
+    @SecurityRequirement(name = "basicAuth")
     public ResponseEntity<Response<LoginResponseDTO>> login(
             Authentication authentication
     ) {

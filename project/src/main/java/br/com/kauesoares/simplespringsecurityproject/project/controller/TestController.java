@@ -24,4 +24,11 @@ public class TestController {
         return "Hello User";
     }
 
+    @GetMapping("/user-or-admin")
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    public String userOrAdmin() {
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+        return "Hello User or Admin";
+    }
+
 }

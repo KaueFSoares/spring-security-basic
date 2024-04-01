@@ -5,6 +5,7 @@ import br.com.kauesoares.simplespringsecurityproject.project.config.properties.R
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -65,13 +66,13 @@ public class SecurityConfig {
 
     @Bean
     JwtEncoder jwtEncoder() {
-        var jwk = new RSAKey
+        RSAKey key = new RSAKey
                 .Builder(rsaProperties.getPublicKey())
                 .privateKey(rsaProperties.getPrivateKey())
                 .build();
 
-        ImmutableJWKSet<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
-        return new NimbusJwtEncoder(jwks);
+        JWKSource<SecurityContext> keySource = new ImmutableJWKSet<>(new JWKSet(key));
+        return new NimbusJwtEncoder(keySource);
     }
 
     @Bean

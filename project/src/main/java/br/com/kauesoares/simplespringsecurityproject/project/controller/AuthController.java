@@ -28,9 +28,7 @@ public class AuthController {
             Authentication authentication
     ) {
         return ResponseEntity.ok(
-                new Response<>(
-                        authService.login(authentication)
-                )
+                Response.with(authService.login(authentication))
         );
     }
 

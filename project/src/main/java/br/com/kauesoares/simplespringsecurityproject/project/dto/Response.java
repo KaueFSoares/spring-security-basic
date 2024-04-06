@@ -2,6 +2,7 @@ package br.com.kauesoares.simplespringsecurityproject.project.dto;
 
 import br.com.kauesoares.simplespringsecurityproject.project.messages.MessageFactory;
 import br.com.kauesoares.simplespringsecurityproject.project.messages.Messages;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,5 +33,17 @@ public class Response<T> {
     public Response(T data) {
         this.message = MessageFactory.getMessage(Messages.SUCCESS);
         this.data = data;
+    }
+
+    public static <T> Response<T> with(T data) {
+        return new Response<>(data);
+    }
+
+    public static <T> Response<T> with(T data, Messages message) {
+        return new Response<>(message, data);
+    }
+
+    public static <T> Response<T> with(Messages message) {
+        return new Response<>(message);
     }
 }

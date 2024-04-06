@@ -1,16 +1,18 @@
 package br.com.kauesoares.simplespringsecurityproject.project.service;
 
 import br.com.kauesoares.simplespringsecurityproject.project.config.properties.JwtProperties;
-import br.com.kauesoares.simplespringsecurityproject.project.dto.res.LoginResponseDTO;
+import br.com.kauesoares.simplespringsecurityproject.project.config.security.AuthUser;
+import br.com.kauesoares.simplespringsecurityproject.project.dto.res.AuthResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 
 
@@ -21,31 +23,48 @@ public class JwtService {
     private final JwtProperties jwtProperties;
     private final JwtEncoder jwtEncoder;
 
-    public LoginResponseDTO generateToken(Authentication authentication) {
-        long EXPIRATION_IN_MINUTES = 10;
-        long EXPIRATION_IN_SECONDS = 60 * EXPIRATION_IN_MINUTES;
+    private static final String REFRESH_TOKEN_CLAIM = "refreshCode";
 
+    public AuthResponseDTO generateAuthData(AuthUser authUser) {
         Instant now = Instant.now();
-        Instant expiresAt = now.plusSeconds(EXPIRATION_IN_SECONDS);
+        Instant accessTokenExpiresAt = Instant.now().plus(1, ChronoUnit.HOURS);
+        Instant refreshTokenExpiresAt = Instant.now().plus(1, ChronoUnit.DAYS);
 
-        String scopes = authentication.getAuthorities().stream()
+        String scopes = authUser.getAuthorities().stream()
                 .map(GrantedAuthority::toString)
                 .collect(Collectors.joining(" "));
 
-        var claims = JwtClaimsSet.builder()
+        JwtClaimsSet accessTokenClaims = JwtClaimsSet.builder()
                 .issuer(jwtProperties.getIssuer())
                 .issuedAt(now)
-                .expiresAt(expiresAt)
-                .subject(authentication.getName())
-                .claim("role", scopes)
+                .expiresAt(accessTokenExpiresAt)
+                .subject(authUser.getUsername())
+                .claim("scope", scopes)
                 .build();
 
-        return new LoginResponseDTO(
+        JwtClaimsSet refreshTokenClaims = JwtClaimsSet.builder()
+                .issuer(jwtProperties.getIssuer())
+                .issuedAt(now)
+                .expiresAt(refreshTokenExpiresAt)
+                .subject(authUser.getUsername())
+                .claim("scope", scopes)
+                .claim(REFRESH_TOKEN_CLAIM, authUser.getRefreshCode())
+                .build();
+
+        String accessToken = jwtEncoder.encode(JwtEncoderParameters.from(accessTokenClaims)).getTokenValue();
+        String refreshToken = jwtEncoder.encode(JwtEncoderParameters.from(refreshTokenClaims)).getTokenValue();
+
+        return new AuthResponseDTO(
                 "Bearer",
-                jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue(),
-                expiresAt.toEpochMilli()
+                accessToken,
+                accessTokenExpiresAt.toEpochMilli(),
+                refreshToken,
+                refreshTokenExpiresAt.toEpochMilli()
         );
     }
 
+    public String extractRefreshCode(Jwt jwt) {
+        return jwt.getClaim(REFRESH_TOKEN_CLAIM);
+    }
 
 }

@@ -1,8 +1,10 @@
 package br.com.kauesoares.simplespringsecurityproject.project.dto.res;
 
-public record LoginResponseDTO(
+public record AuthResponseDTO(
         String tokenType,
         String accessToken,
-        Long expiresIn
+        Long accessExpiresIn,
+        String refreshToken,
+        Long refreshExpiresIn
 ) {
 }

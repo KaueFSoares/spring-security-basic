@@ -32,4 +32,7 @@ public class User extends BaseEntity {
     @Column(name = "role_id")
     private Set<Role> roles = new HashSet<>();
 
+    @Column(length = 36)
+    private String refreshCode;
+
 }

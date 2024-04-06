@@ -22,8 +22,11 @@ public class JwtService {
     private final JwtEncoder jwtEncoder;
 
     public LoginResponseDTO generateToken(Authentication authentication) {
+        long EXPIRATION_IN_MINUTES = 10;
+        long EXPIRATION_IN_SECONDS = 60 * EXPIRATION_IN_MINUTES;
+
         Instant now = Instant.now();
-        Instant expiresAt = now.plusSeconds(3600L);
+        Instant expiresAt = now.plusSeconds(EXPIRATION_IN_SECONDS);
 
         String scopes = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::toString)
@@ -34,7 +37,7 @@ public class JwtService {
                 .issuedAt(now)
                 .expiresAt(expiresAt)
                 .subject(authentication.getName())
-                .claim("scope", scopes)
+                .claim("role", scopes)
                 .build();
 
         return new LoginResponseDTO(

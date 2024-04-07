@@ -2,6 +2,7 @@ package br.com.kauesoares.simplespringsecurityproject.project.controller;
 
 import br.com.kauesoares.simplespringsecurityproject.project.dto.Response;
 import br.com.kauesoares.simplespringsecurityproject.project.dto.res.AuthResponseDTO;
+import br.com.kauesoares.simplespringsecurityproject.project.messages.Messages;
 import br.com.kauesoares.simplespringsecurityproject.project.service.AuthService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,15 @@ public class AuthController {
     public ResponseEntity<Response<AuthResponseDTO>> refresh() {
         return ResponseEntity.ok(
                 Response.with(this.authService.refresh())
+        );
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Response<Void>> logout() {
+        this.authService.logout();
+
+        return ResponseEntity.ok(
+                Response.with(Messages.SUCCESS)
         );
     }
 

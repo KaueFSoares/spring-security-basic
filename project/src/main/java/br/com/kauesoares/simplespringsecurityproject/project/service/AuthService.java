@@ -60,4 +60,12 @@ public class AuthService {
 
         return this.jwtService.generateAuthData(authUser);
     }
+
+    public void logout() {
+        User user = this.userRepository.findByUsername(AuthUtil.getUserName())
+                .orElseThrow(() -> new UnauthorizedException(Messages.USER_NOT_FOUND));
+
+        user.setRefreshCode(null);
+        this.userRepository.save(user);
+    }
 }

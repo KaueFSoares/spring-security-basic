@@ -6,9 +6,11 @@ import br.com.kauesoares.simplespringsecurityproject.project.messages.MessageFac
 import br.com.kauesoares.simplespringsecurityproject.project.messages.Messages;
 import br.com.kauesoares.simplespringsecurityproject.project.messages.exception.ServiceException;
 import br.com.kauesoares.simplespringsecurityproject.project.messages.exception.UnprocessableEntityException;
+import br.com.kauesoares.simplespringsecurityproject.project.util.CacheUtil;
 import com.amazonaws.services.s3.model.S3Object;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -85,6 +87,7 @@ public class CryptoService {
         return privateKey;
     }
 
+    @Cacheable("rsa-encode-" + CacheUtil.HOURS_IN_A_WEEK)
     public String encode(String plainText) {
         try {
             PublicKey publicKey = this.getPublicKey();
@@ -102,6 +105,7 @@ public class CryptoService {
         }
     }
 
+    @Cacheable("rsa-decode-" + CacheUtil.HOURS_IN_A_WEEK)
     public String decode(String encodedText) {
         try {
             PrivateKey privateKey = this.getPrivateKey();

@@ -5,12 +5,14 @@ import br.com.kauesoares.simplespringsecurityproject.project.integration.s3.AWSC
 import br.com.kauesoares.simplespringsecurityproject.project.messages.MessageFactory;
 import br.com.kauesoares.simplespringsecurityproject.project.messages.Messages;
 import br.com.kauesoares.simplespringsecurityproject.project.messages.exception.ServiceException;
+import br.com.kauesoares.simplespringsecurityproject.project.messages.exception.UnprocessableEntityException;
 import com.amazonaws.services.s3.model.S3Object;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.Cipher;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.security.KeyFactory;
@@ -81,6 +83,40 @@ public class CryptoService {
         }
 
         return privateKey;
+    }
+
+    public String encode(String plainText) {
+        try {
+            PublicKey publicKey = this.getPublicKey();
+            Cipher encryptCipher = Cipher.getInstance("RSA");
+            encryptCipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            byte[] cipherText = encryptCipher.doFinal(plainText.getBytes());
+            return Base64.getEncoder().encodeToString(cipherText);
+        } catch (Exception e) {
+            log.error(MessageFactory.getLogMessage(
+                    Messages.ENCRYPT_ERROR,
+                    "service.RSAEncryptionService.encode",
+                    e.getMessage()
+            ));
+            throw new UnprocessableEntityException(Messages.ENCRYPT_ERROR);
+        }
+    }
+
+    public String decode(String encodedText) {
+        try {
+            PrivateKey privateKey = this.getPrivateKey();
+            Cipher decryptCipher = Cipher.getInstance("RSA");
+            decryptCipher.init(Cipher.DECRYPT_MODE, privateKey);
+            byte[] plainText = decryptCipher.doFinal(Base64.getDecoder().decode(encodedText));
+            return new String(plainText);
+        } catch (Exception e) {
+            log.error(MessageFactory.getLogMessage(
+                    Messages.DECRYPT_ERROR,
+                    "service.RSAEncryptionService.decode",
+                    e.getMessage()
+            ));
+            throw new UnprocessableEntityException(Messages.DECRYPT_ERROR);
+        }
     }
 
 }

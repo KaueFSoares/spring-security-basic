@@ -32,3 +32,5 @@ build/
 .vscode/
 
 *.env
+*.key
+*.pub

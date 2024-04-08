@@ -25,19 +25,26 @@ server:
 
 security:
   rsa:
-    publicKey: ${RSA_PUBLIC_KEY}
-    privateKey: ${RSA_PRIVATE_KEY}
+    public-key-path: ${RSA_PUBLIC_KEY}
+    private-key-path: ${RSA_PRIVATE_KEY}
 
   auth:
     jwt:
       issuer: ${JWT_ISSUER}
 
     seed:
-      adminUsername: ${ADMIN_USERNAME}
-      adminPassword: ${ADMIN_PASSWORD}
+      admin-username: ${ADMIN_USERNAME}
+      admin-password: ${ADMIN_PASSWORD}
 
-      userUsername: ${USER_USERNAME}
-      userPassword: ${USER_PASSWORD}
+      user-username: ${USER_USERNAME}
+      user-password: ${USER_PASSWORD}
 
   cors:
     frontend: ${CORS_FRONTEND}
+
+integration:
+  s3:
+    region: ${S3_REGION}
+    access-key: ${S3_ACCESS_KEY}
+    secret-key: ${S3_SECRET_KEY}
+    bucket-name: ${S3_BUCKET_NAME}

@@ -5,16 +5,18 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-
 @Configuration
 @PropertySource("classpath:application.yml")
-@ConfigurationProperties(prefix = "security.rsa")
+@ConfigurationProperties(prefix = "integration.s3")
 @Data
-public class RSAProperties {
+public class S3Properties {
 
-    private String publicKeyPath;
-    private String privateKeyPath;
+    private String region;
+
+    private String accessKey;
+
+    private String secretKey;
+
+    private String bucketName;
 
 }

@@ -2,6 +2,7 @@ package br.com.kauesoares.simplespringsecurityproject.project.config.security;
 
 
 import br.com.kauesoares.simplespringsecurityproject.project.config.properties.RSAProperties;
+import br.com.kauesoares.simplespringsecurityproject.project.service.CryptoService;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -27,13 +28,15 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.security.interfaces.RSAPublicKey;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final RSAProperties rsaProperties;
+    private final CryptoService cryptoService;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -60,14 +63,14 @@ public class SecurityConfig {
 
     @Bean
     JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withPublicKey(rsaProperties.getPublicKey()).build();
+        return NimbusJwtDecoder.withPublicKey((RSAPublicKey) cryptoService.getPublicKey()).build();
     }
 
     @Bean
     JwtEncoder jwtEncoder() {
         RSAKey key = new RSAKey
-                .Builder(rsaProperties.getPublicKey())
-                .privateKey(rsaProperties.getPrivateKey())
+                .Builder((RSAPublicKey) cryptoService.getPublicKey())
+                .privateKey(cryptoService.getPrivateKey())
                 .build();
 
         JWKSource<SecurityContext> keySource = new ImmutableJWKSet<>(new JWKSet(key));

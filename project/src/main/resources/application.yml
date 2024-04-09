@@ -48,3 +48,8 @@ integration:
     access-key: ${S3_ACCESS_KEY}
     secret-key: ${S3_SECRET_KEY}
     bucket-name: ${S3_BUCKET_NAME}
+
+docs:
+  openapi:
+    production-url: ${PRODUCTION_SERVER_URL}
+    stage-url: ${STAGE_SERVER_URL}

@@ -51,7 +51,7 @@ public class CryptoService {
                 publicKey = keyFactory.generatePublic(keySpec);
             } catch (Exception e) {
                 log.error(MessageFactory.getLogMessage(
-                        Messages.ENCRYPT_ERROR,
+                        Messages.LOG_DEFAULT_ERROR,
                         "service.RSAEncryptionService.getPublicKey",
                         e.getMessage()
                 ));
@@ -76,7 +76,7 @@ public class CryptoService {
                 privateKey = keyFactory.generatePrivate(keySpec);
             } catch (Exception e) {
                 log.error(MessageFactory.getLogMessage(
-                        Messages.DECRYPT_ERROR,
+                        Messages.LOG_DEFAULT_ERROR,
                         "service.RSAEncryptionService.getPrivateKey",
                         e.getMessage()
                 ));
@@ -97,7 +97,7 @@ public class CryptoService {
             return Base64.getEncoder().encodeToString(cipherText);
         } catch (Exception e) {
             log.error(MessageFactory.getLogMessage(
-                    Messages.ENCRYPT_ERROR,
+                    Messages.LOG_DEFAULT_ERROR,
                     "service.RSAEncryptionService.encode",
                     e.getMessage()
             ));
@@ -115,7 +115,7 @@ public class CryptoService {
             return new String(plainText);
         } catch (Exception e) {
             log.error(MessageFactory.getLogMessage(
-                    Messages.DECRYPT_ERROR,
+                    Messages.LOG_DEFAULT_ERROR,
                     "service.RSAEncryptionService.decode",
                     e.getMessage()
             ));

@@ -12,4 +12,5 @@ public enum Messages {
     ENCRYPT_ERROR,
     DECRYPT_ERROR,
 
+    LOG_DEFAULT_ERROR,
 }
